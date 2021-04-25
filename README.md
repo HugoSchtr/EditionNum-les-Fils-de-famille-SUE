@@ -1,1 +1,1 @@
-Projet d'édition numérique
+Projet d'édition numérique - Work in progress !
