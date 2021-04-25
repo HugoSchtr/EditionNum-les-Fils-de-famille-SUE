@@ -294,11 +294,9 @@
                 <xsl:value-of select="./head"/>
             </xsl:element>
             
-            <xsl:for-each select="./p">
-                <xsl:element name="p">
-                    <xsl:apply-templates/>
-                </xsl:element>
-            </xsl:for-each>
+            <xsl:element name="p">
+                <xsl:apply-templates select="p"/>
+            </xsl:element>
             
             <xsl:if test=".//gap">
                 <xsl:element name="p">
@@ -313,6 +311,12 @@
 
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="p">
+        <xsl:element name="p">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
