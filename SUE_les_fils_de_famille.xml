@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Très bon travail d'encodage -->
 <!-- Vous avez oublié d'associer vos règles schematron + attention l'une de vos règles n'est pas en adéquation avec votre encodage -->
-<?xml-model href="out/SUE_les_fils_de_famille_odd.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="documentation/out/SUE_les_fils_de_famille_odd.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
    <teiHeader>
       <fileDesc>
@@ -157,7 +157,7 @@
 
                <person xml:id="Geneviève" sex="female">
                   <persName>Geneviève</persName>
-                  <note>Geneviève a plus de 60 ans au début du roman. Elle est la nourrice de
+                  <note>Geneviève a plus de soixante ans au début du roman. Elle est la nourrice de
                         <persName ref="#Charles_Delmare">Charles Delmare</persName> et travaille
                      dans sa demeure du Jura.</note>
                </person>
@@ -187,7 +187,7 @@
          </particDesc>
       </profileDesc>
       <encodingDesc><!-- Bien -->
-         <p>Cet encodage a été réalisé à partir de la numérisation disponible sur gallica du
+         <p>Cet encodage a été réalisé à partir de la numérisation disponible sur Gallica du
             roman-feuilleton Les Fils de Famille, écrit par Eugène Sue en 1856, et édité par la
             librairie Michel Lévy Frères en 1862. Le texte a été transcrit fidèlement, à l'exception
             des césures de fin de ligne propres à l'édition, qui ont été transformées en un seul
