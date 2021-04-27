@@ -1,4 +1,4 @@
-# Projet d'édition numérique - *Les fils de famille*, Eugène SUE (1856), édité par la librairie Michel Lévy Frères (1862).
+# Projet d'édition numérique - *Les fils de famille*, Eugène SUE (1856), édité par la librairie Michel Lévy Frères (1862)
 
 ## Encodage XML-TEI
 
