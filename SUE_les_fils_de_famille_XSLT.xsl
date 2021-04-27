@@ -308,7 +308,7 @@
         </xsl:for-each>
         
     </xsl:template>
-
+    
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
             <xsl:apply-templates/>
@@ -320,5 +320,6 @@
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
+   
 
 </xsl:stylesheet>
