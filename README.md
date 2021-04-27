@@ -12,7 +12,7 @@ Ces règles spécifiques ont été appliquées dans le but de :
 
 ## Transformations XSL
 
-Les transformations XSL ont pour but de réaliser une sortie HTML depuis l'encodage en XML. L'édition numérique se présente ainsi sous la forme de plusieurs pages html :
+Les transformations XSL ont pour but de réaliser une sortie HTML depuis l'encodage en XML. L'édition numérique se présente ainsi sous la forme de plusieurs pages HTML :
 
 * Une page d'accueil
 * Les informations bibliographiques de l'édition d'origine
