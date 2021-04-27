@@ -3,15 +3,15 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xpath-default-namespace="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="xs tei"
     version="2.0">
-<!-- Exclusion des préfixes TEI avec exclude-result-prefixes -->
+    <!-- Exclusion des préfixes TEI avec exclude-result-prefixes -->
 
-<!-- On configure l'output HTML, avec indentation automatique et encodage en UTF-8 -->
-    <xsl:output method="html" indent="yes" encoding="UTF-8"/> 
+    <!-- On configure l'output HTML, avec indentation automatique et encodage en UTF-8 -->
+    <xsl:output method="html" indent="yes" encoding="UTF-8"/>
 
-<!-- On évite les espaces non voulus -->
+    <!-- On évite les espaces non voulus -->
     <xsl:strip-space elements="*"/>
 
-<!-- On configure les sorties HTML -->
+    <!-- On configure les sorties HTML -->
 
     <xsl:template match="/">
         <!-- On stocke le nom le chemin du fichier courant -->
@@ -19,7 +19,7 @@
             <xsl:value-of select="replace(base-uri(.), 'SUE_les_fils_de_famille.xml', '')"/>
         </xsl:variable>
 
-<!-- Pour chaque output HTML de l'édition numérique, on crée une variable qui stocke le chemin de l'output, en concaténant la variable witfile crée précédemment. -->
+        <!-- Pour chaque output HTML de l'édition numérique, on crée une variable qui stocke le chemin de l'output, en concaténant la variable witfile crée précédemment. -->
         <xsl:variable name="path_homepage">
             <xsl:value-of select="concat($witfile, 'html/homepage', '.html')"/>
         </xsl:variable>
@@ -43,7 +43,7 @@
         <xsl:variable name="path_original_edition">
             <xsl:value-of select="concat($witfile, 'html/original_edition', '.html')"/>
         </xsl:variable>
-        
+
         <xsl:variable name="path_analysis">
             <xsl:value-of select="concat($witfile, 'html/analysis', '.html')"/>
         </xsl:variable>
@@ -51,9 +51,9 @@
         <xsl:variable name="path_about">
             <xsl:value-of select="concat($witfile, 'html/about', '.html')"/>
         </xsl:variable>
-                
+
         <!-- BRIQUES DE CONSTRUCTION DES PAGES HTML -->
-        
+
         <!-- On crée le head HTML -->
         <xsl:variable name="head">
             <head>
@@ -68,7 +68,7 @@
                         select="concat(//sourceDesc//titleStmt/title, ', ', //sourceDesc//forename, ' ', //sourceDesc//surname)"
                     />
                 </title>
-                <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"/>
                 <link
                     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
                     rel="stylesheet"
@@ -78,7 +78,7 @@
             </head>
         </xsl:variable>
 
-<!-- On crée une barre de navigation -->
+        <!-- On crée une barre de navigation -->
         <xsl:variable name="nav_bar">
             <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-between">
                 <a class="navbar-brand" style="padding-left: 5px" href="{$path_homepage}">
@@ -116,7 +116,7 @@
             </nav>
         </xsl:variable>
 
-<!-- On crée un footer pour la mise en page -->
+        <!-- On crée un footer pour la mise en page -->
         <xsl:variable name="footer">
             <footer class="text-center text-white" style="background-color: #f1f1f1;">
                 <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
@@ -125,7 +125,7 @@
             </footer>
         </xsl:variable>
 
-<!-- Avec xsl:result-document, on écrit les règles de transformation pour les output -->
+        <!-- Avec xsl:result-document, on écrit les règles de transformation pour les output -->
         <!-- Ici, on crée l'output HTML correspondant à la page d'accueil. -->
         <xsl:result-document href="{$path_homepage}" method="html" indent="yes">
             <html>
@@ -162,7 +162,7 @@
             </html>
         </xsl:result-document>
 
-<!-- On crée l'index des personnages -->
+        <!-- On crée l'index des personnages -->
         <xsl:result-document href="{$path_pers_index}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -215,126 +215,142 @@
                             <li>Mise à disposition par : <a href="{//biblFull//distributor/@facs}"
                                         ><xsl:value-of select="//biblFull//distributor"/></a></li>
                         </ul>
-                    </div>    
+                    </div>
                     <div class="container">
                         <h1>Localisation de l'extrait dans l'oeuvre originale</h1>
                         <ul>
-                            <li>Partie : <xsl:value-of select="//biblFull/seriesStmt/biblScope[@unit = 'part']"/></li>
-                            <li>Chapitre : <xsl:value-of select="//biblFull/seriesStmt/biblScope[@unit = 'chapter']"/></li>
-                            <li>Pages : <xsl:value-of select="//biblFull/seriesStmt/biblScope[@unit = 'page']"/></li>
+                            <li>Partie : <xsl:value-of
+                                    select="//biblFull/seriesStmt/biblScope[@unit = 'part']"/></li>
+                            <li>Chapitre : <xsl:value-of
+                                    select="//biblFull/seriesStmt/biblScope[@unit = 'chapter']"
+                                /></li>
+                            <li>Pages : <xsl:value-of
+                                    select="//biblFull/seriesStmt/biblScope[@unit = 'page']"/></li>
                         </ul>
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
             </html>
         </xsl:result-document>
-        
+
         <xsl:result-document href="{$path_transcription}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
                 <body>
                     <xsl:copy-of select="$nav_bar"/>
                     <div class="container">
-                            <xsl:call-template name="transcription"/>
+                        <xsl:call-template name="transcription"/>
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
-            </html>            
+            </html>
         </xsl:result-document>
-        
+
         <xsl:result-document href="{$path_analysis}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
                 <body>
                     <xsl:copy-of select="$nav_bar"/>
-                    <div class="container d-flex justify-content-center"><h1>Analyses statistiques de l'extrait encodé</h1></div>
+                    <div class="container d-flex justify-content-center">
+                        <h1>Analyses statistiques de l'extrait encodé</h1>
+                    </div>
                     <div class="container">
-                        <div class="d-flex justify-content-center" id="SpeechDistributionChart"></div>
+                        <div class="d-flex justify-content-center" id="SpeechDistributionChart"/>
                     </div>
                     <div class="container">
                         <table class="columns">
                             <tr>
-                                <td><div style="margin:10px; border: 1px solid #ccc" id="GenevieveSpeechDistributionChart"></div></td>
-                                <td><div style="margin:10px; border: 1px solid #ccc" id="CharlesDelmareSpeechDistributionChart"></div></td>
-                                <td><div style="margin:10px; border: 1px solid #ccc" id="PereDelmareSpeechDistributionChart"></div></td>
-                                </tr>
+                                <td>
+                                    <div style="margin:10px; border: 1px solid #ccc"
+                                        id="GenevieveSpeechDistributionChart"/>
+                                </td>
+                                <td>
+                                    <div style="margin:10px; border: 1px solid #ccc"
+                                        id="CharlesDelmareSpeechDistributionChart"/>
+                                </td>
+                                <td>
+                                    <div style="margin:10px; border: 1px solid #ccc"
+                                        id="PereDelmareSpeechDistributionChart"/>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
                 <script type="text/javascript">
-                    google.charts.load('current', {'packages':['corechart']});
+                    google.charts.load('current', {
+                        'packages':[ 'corechart']
+                    });
                     google.charts.setOnLoadCallback(drawSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawGenevieveSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
+                    google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
+                    google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
                     
                     function drawSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Distribution de l'espace de parole"],
-                    ['Geneviève', <xsl:value-of select="count(//said[@who='#Geneviève'])"/>],
-                    ['Charles Delmare',  <xsl:value-of select="count(//said[@who='#Charles_Delmare'])"/>],
-                    ['Le Père Delmare', <xsl:value-of select="count(//said[@who='#père_Delmare'])"/>],
-                    ]);
+                        var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare'])"/>
+],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare'])"/>
+],]);
                     
-                    var options = {'title':"Distribution de l'espace de parole", 'width':550, 'height':400};
+                    var options = {
+                        'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('SpeechDistributionChart'));
-                        chart.draw(data, options);
-                        }
-                        
-                        function drawGenevieveSpeechDistributionChart() {
-                        var data = google.visualization.arrayToDataTable([
-                        ['Task', "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise"],
-                        ['Geneviève', <xsl:value-of select="count(//said[@who='#Geneviève']//rs[@ref='#Geneviève'])"/>],
-                    ['Charles Delmare',  <xsl:value-of select="count(//said[@who='#Geneviève']//rs[@ref='#Charles_Delmare'])"/>],
-                    ['Le Père Delmare', <xsl:value-of select="count(//said[@who='#Geneviève']//rs[@ref='#père_Delmare'])"/>],
-                    ]);
+                    chart.draw(data, options);
+                }
+                
+                function drawGenevieveSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
+],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
+],]);
                     
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise", 'width':400, 'height':400};
+                    var options = {
+                        'title': "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('GenevieveSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }
+                }
+                
+                
+                function drawCharlesDelmareSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
+],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
+],]);
                     
-                    
-                    function drawCharlesDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', <xsl:value-of select="count(//said[@who='#Charles_Delmare']//rs[@ref='#Geneviève'])"/>],
-                    ['Charles Delmare',  <xsl:value-of select="count(//said[@who='#Charles_Delmare']//rs[@ref='#Charles_Delmare'])"/>],
-                    ['Le Père Delmare', <xsl:value-of select="count(//said[@who='#Charles_Delmare']//rs[@ref='#père_Delmare'])"/>],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris", 'width':400, 'height':400};
+                    var options = {
+                        'title': "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('CharlesDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }
+                }
+                
+                
+                function drawPereDelmareSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
+],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'])"/>
+],]);
                     
-                    
-                    function drawPereDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', <xsl:value-of select="count(//said[@who='#père_Delmare']//rs[@ref='#Geneviève'])"/>],
-                    ['Charles Delmare',  <xsl:value-of select="count(//said[@who='#père_Delmare']//rs[@ref='#Charles_Delmare'])"/>],
-                    ['Le Père Delmare', <xsl:value-of select="count(//said[@who='#père_Delmare']//rs[@ref='#père_Delmare'])"/>],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues du Père Delmare, lui y compris", 'width':400, 'height':400};
+                    var options = {
+                        'title': "Fréquence de mention des autres personnages dans les dialogues du Père Delmare, lui y compris", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }                    
-                </script>
-            </html> 
+                }</script>
+            </html>
         </xsl:result-document>
 
     </xsl:template>
 
-<!-- Templates -->
+    <!-- Templates -->
 
-<!-- Template d'affichage de l'index des personnages -->
+    <!-- Template d'affichage de l'index des personnages -->
     <xsl:template name="pers_index">
         <!-- On écrit une boucle for-each pour pouvoir trier par ordre alphabétique les personnages avec xsl:sort -->
         <xsl:for-each select="//listPerson/person">
@@ -345,7 +361,7 @@
         </xsl:for-each>
     </xsl:template>
 
-<!-- Template d'affichage de l'index des noms de lieux -->
+    <!-- Template d'affichage de l'index des noms de lieux -->
     <xsl:template name="place_index">
         <!-- On utilise une boucle for-each pour pouvoir créer une mise en page en fonction des informations disponibles pour chaque lieu. -->
         <xsl:for-each select="//listPlace/place">
@@ -355,12 +371,12 @@
 
                 <xsl:value-of select="concat(' (', @type, ')')"/>
 
-<!-- Si le lieu a une information de région (!= 'none', dans l'encodage XML), on la récupère, sinon, on ne fait rien.. -->
+                <!-- Si le lieu a une information de région (!= 'none', dans l'encodage XML), on la récupère, sinon, on ne fait rien.. -->
                 <xsl:if test="placeName//region != 'none'">
                     <xsl:value-of select="concat(', ', placeName//region)"/>
                 </xsl:if>
 
-<!-- Si le lieu a une information de note, on la récupère. Sinon, on met directement un '.' -->
+                <!-- Si le lieu a une information de note, on la récupère. Sinon, on met directement un '.' -->
                 <xsl:choose>
                     <xsl:when test="note">
                         <xsl:value-of select="concat(' : ', note)"/>
@@ -370,51 +386,51 @@
             </li>
         </xsl:for-each>
     </xsl:template>
-      
+
     <xsl:template name="transcription" match="//body">
-        
+
         <xsl:element name="h1">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="descendant::div[1]/head"/>
         </xsl:element>
-        
+
         <xsl:element name="h2">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="descendant::div[2]/head"/>
         </xsl:element>
-        
+
         <xsl:for-each select="descendant::div[2]/div">
-            
+
             <xsl:element name="h3">
                 <xsl:attribute name="class">text-center</xsl:attribute>
                 <xsl:value-of select="./head"/>
             </xsl:element>
-            
+
             <xsl:element name="p">
                 <xsl:apply-templates select="p"/>
             </xsl:element>
-            
+
             <xsl:if test=".//gap">
                 <xsl:element name="p">
                     <xsl:attribute name="class">text-danger</xsl:attribute>
-                    <u>                Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
+                    <u> Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
                 </xsl:element>
-                
+
             </xsl:if>
         </xsl:for-each>
-        
+
     </xsl:template>
-     
+
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="p">
         <xsl:element name="p">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-   
+
 </xsl:stylesheet>
