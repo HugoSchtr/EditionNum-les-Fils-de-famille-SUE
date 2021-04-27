@@ -1,5 +1,7 @@
 # Projet d'édition numérique - *Les fils de famille*, Eugène SUE (1856), édité par la librairie Michel Lévy Frères (1862).
 
+## Encodage XML-TEI
+
 Ce projet d'édition numérique résulte de l'encodage en XML-TEI d'un passage du roman-feuilleton *Les Fils de famille*, écrit par Eugène Sue, à l'aide d'une ODD et d'une RNG personnalisée. L'encodage a été réalisé à partir de l'édition numérisée, disponible sur [Gallica](https://gallica.bnf.fr/ark:/12148/bpt6k58180814/).
 
 Ces règles spécifiques ont été appliquées dans le but de :
@@ -7,6 +9,8 @@ Ces règles spécifiques ont été appliquées dans le but de :
 * Présenter l'histoire de la librairie Michel Lévy Frères par rapport aux oeuvres qu'elle a édité.
 * Mettre en relief la structure littéraire de l'oeuvre textuelle encodée. Se faisant, cet encodage est propice à la création d'un outil de recherche scientifique, facilitant la navigation dans l'oeuvre.
 * Etudier les rapports entre les personnages, les espaces de parole qui leurs sont dédiés, ainsi que leur fréquence d'apparition et de mention respective dans l'oeuvre, selon les contextes, dans le but de produire des données statistiques. Cet encodage pourrait permettre, à terme, une analyse poussée des différentes dynamiques propres aux relations entre les personnages.
+
+## Transformations XSL
 
 Les transformations XSL ont pour but de réaliser une sortie HTML depuis l'encodage en XML. L'édition numérique se présente ainsi sous la forme de plusieurs pages html :
 
