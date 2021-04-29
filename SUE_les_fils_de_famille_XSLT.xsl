@@ -52,7 +52,7 @@
             <xsl:value-of select="concat($witfile, 'html/about', '.html')"/>
         </xsl:variable>
 
-        <!-- BRIQUES DE CONSTRUCTION DES PAGES HTML -->
+        <!-- BRIQUES DE CONSTRUCTION DES SORTIES HTML -->
 
         <!-- On crée le head HTML -->
         <xsl:variable name="head">
@@ -125,8 +125,12 @@
             </footer>
         </xsl:variable>
 
-        <!-- Avec xsl:result-document, on écrit les règles de transformation pour les output -->
-        <!-- Ici, on crée l'output HTML correspondant à la page d'accueil. -->
+        <!-- SORTIES HTML -->
+        <!-- Avec xsl:result-document, on écrit les règles de transformation pour les output
+        Ici, on crée l'output HTML correspondant à la page d'accueil. -->
+        <!-- @href permet d'indiquer le chemin du fichier de sortie
+        @method indique ici que la sortie sera en HTML
+        @indent="yes" permet d'indiquer qu'on attend du HTML indenté -->
         <xsl:result-document href="{$path_homepage}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -171,7 +175,7 @@
                     <div class="container">
                         <h1>Index des noms de personnages</h1>
                         <ul>
-                            <!-- On appelle une xsl:template créée plus bas. -->
+                            <!-- On appelle une xsl:template créée plus bas grâce à l'attribut @name. -->
                             <xsl:call-template name="pers_index"/>
                         </ul>
                     </div>
@@ -205,6 +209,7 @@
                         <h1>Informations bibligraphiques de l'édition d'origine</h1>
                         <ul>
                             <li>Titre : <xsl:value-of select="//biblFull/titleStmt/title"/></li>
+                            <!-- On utilise la fonction concat() pour concaténer plusieurs chaînes de caractères afin de mettre en page les informations. -->
                             <li>Auteur : <xsl:value-of
                                     select="concat(//biblFull/titleStmt//forename, ' ', //biblFull/titleStmt//surname)"
                                 /></li>
@@ -219,6 +224,8 @@
                     <div class="container">
                         <h1>Localisation de l'extrait dans l'oeuvre originale</h1>
                         <ul>
+                            <!-- On sélectionne des éléments XML en testant leur attribut @unit.
+                            Par exemple, le premier <xsl:value> récupère la valeur de l'élément <biblScope unit="part"> -->
                             <li>Partie : <xsl:value-of
                                     select="//biblFull/seriesStmt/biblScope[@unit = 'part']"/></li>
                             <li>Chapitre : <xsl:value-of
@@ -239,13 +246,17 @@
                 <body>
                     <xsl:copy-of select="$nav_bar"/>
                     <div class="container">
-                        <xsl:call-template name="transcription"/>
+                            <xsl:element name="div">
+                                <xsl:apply-templates select="//body"/>
+                            </xsl:element>
+                        
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
             </html>
         </xsl:result-document>
-
+        
+        <!-- Pour les analyses statistiques, on utilise la librairie JavaScript "Google Charts" permettant de réaliser des diagrammes. -->
         <xsl:result-document href="{$path_analysis}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -259,6 +270,8 @@
                     </div>
                     <div class="container">
                         <table class="columns">
+                            <caption style="caption-side:top;">Répartition des mentions des
+                                personnages dans tous les dialogues selon les personnages</caption>
                             <tr>
                                 <td>
                                     <div style="margin:10px; border: 1px solid #ccc"
@@ -274,9 +287,12 @@
                                 </td>
                             </tr>
                         </table>
+                        <div style="margin:10px; border: 1px solid #ccc"
+                            id="test"/>
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
+                <!-- Ci-dessous, le script JavaScript permettant l'affichage des diagrammes. -->
                 <script type="text/javascript">
                     google.charts.load('current', {
                         'packages':[ 'corechart']
@@ -285,12 +301,24 @@
                     google.charts.setOnLoadCallback(drawGenevieveSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
+                    google.charts.setOnLoadCallback(drawChart);
                     
+                    
+                    // Premier diagramme concernant la répartition de l'espace de parole
                     function drawSpeechDistributionChart() {
-                        var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève'])"/>
-],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare'])"/>
-],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare'])"/>
-],]);
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],
+                    <xsl:for-each select="//listPerson/person">
+                        <xsl:variable name="person">
+                            <xsl:value-of select="persName"/>
+                        </xsl:variable>
+                        <xsl:variable name="person_id">
+                            <xsl:value-of select="./@xml:id"/>
+                        </xsl:variable>
+                        ['<xsl:value-of select="$person"/>', <xsl:value-of select="count(//said[@who=concat('#',$person_id)])"/>],
+                    </xsl:for-each>
+                    ]);
+                    
+                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
@@ -300,49 +328,61 @@
                     chart.draw(data, options);
                 }
                 
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise.
+                
+                
                 function drawGenevieveSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
 ],]);
+
+// Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
                     
                     var options = {
-                        'title': "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
                     };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('GenevieveSpeechDistributionChart'));
                     chart.draw(data, options);
                 }
                 
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris.
                 
                 function drawCharlesDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
 ],]);
                     
                     var options = {
-                        'title': "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
                     };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('CharlesDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
                 }
                 
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris.
                 
                 function drawPereDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le Père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'])"/>
 ],]);
                     
                     var options = {
-                        'title': "Fréquence de mention des autres personnages dans les dialogues du Père Delmare, lui y compris", 'width': 400, 'height': 400
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris", 'width': 400, 'height': 400
                     };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                }</script>
+                }         
+                
+                
+                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.
+                                   
+                </script>
             </html>
         </xsl:result-document>
 
@@ -386,49 +426,45 @@
             </li>
         </xsl:for-each>
     </xsl:template>
-
-    <xsl:template name="transcription" match="//body">
-
+    
+    <xsl:template match="//body/div/head">
         <xsl:element name="h1">
             <xsl:attribute name="class">text-center</xsl:attribute>
-            <xsl:value-of select="descendant::div[1]/head"/>
+            <xsl:value-of select="."/>
         </xsl:element>
-
+    </xsl:template>
+    
+    <xsl:template match="//body/div//div/head">
         <xsl:element name="h2">
             <xsl:attribute name="class">text-center</xsl:attribute>
-            <xsl:value-of select="descendant::div[2]/head"/>
+            <xsl:value-of select="."/>
         </xsl:element>
-
-        <xsl:for-each select="descendant::div[2]/div">
-
-            <xsl:element name="h3">
-                <xsl:attribute name="class">text-center</xsl:attribute>
-                <xsl:value-of select="./head"/>
-            </xsl:element>
-
-            <xsl:element name="p">
-                <xsl:apply-templates select="p"/>
-            </xsl:element>
-
-            <xsl:if test=".//gap">
-                <xsl:element name="p">
-                    <xsl:attribute name="class">text-danger</xsl:attribute>
-                    <u> Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
-                </xsl:element>
-
-            </xsl:if>
-        </xsl:for-each>
-
+    </xsl:template>
+    
+    <xsl:template match="//body/div//div//div/head">
+        <xsl:element name="h3">
+            <xsl:attribute name="class">text-center</xsl:attribute>
+            <xsl:copy>
+                <xsl:apply-templates/>
+            </xsl:copy>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="//body//p">
+        <xsl:element name="p">
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="//gap">
+        <xsl:element name="p">
+            <xsl:attribute name="class">text-danger</xsl:attribute>
+            <u> Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
+        </xsl:element>
     </xsl:template>
 
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
-            <xsl:apply-templates/>
-        </xsl:element>
-    </xsl:template>
-
-    <xsl:template match="p">
-        <xsl:element name="p">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
