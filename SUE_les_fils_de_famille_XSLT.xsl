@@ -318,7 +318,9 @@
                     </xsl:for-each>
                     ]);
                     
-                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
+                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y 
+                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle 
+                    // s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
