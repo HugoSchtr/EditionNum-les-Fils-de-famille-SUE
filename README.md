@@ -19,6 +19,7 @@ Les transformations XSL ont pour but de réaliser une sortie HTML depuis l'encod
 * La transcription du passage encodé
 * L'index des personnages
 * L'index des noms de lieux
+* Une page détaillant les relations entre les personnages
 * Une page dédiée aux analyses statistiques des relations entre les personnages, à partir de l'encodage des dialogues entre ceux-ci
 * Une page à propos donnant des informations sur le projet
 
