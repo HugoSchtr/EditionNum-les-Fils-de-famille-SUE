@@ -332,6 +332,7 @@
                 </body>
                 <xsl:copy-of select="$footer"/>
                 <!-- Ci-dessous, le script JavaScript permettant l'affichage des diagrammes. -->
+                <!-- réfléchir à l'utilité de la | -->
                 <script type="text/javascript">
                     google.charts.load('current', {
                         'packages':[ 'corechart']
@@ -385,7 +386,7 @@
                 
                 
                 function drawGenevieveSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'] | //said[@who = '#Geneviève']//persName[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
 ]]);
