@@ -497,6 +497,8 @@
         </xsl:for-each>
     </xsl:template>
 
+    <!-- Règles pour afficher la transcription -->
+    <!-- On traite les <head> des <div> de premier niveau -->
     <xsl:template match="//body/div/head">
         <xsl:element name="h1">
             <xsl:attribute name="class">text-center</xsl:attribute>
@@ -504,14 +506,16 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="//body/div//div/head">
+    <!-- On traite les <head> des <div> de deuxième niveau -->
+    <xsl:template match="//body/div/div/head">
         <xsl:element name="h2">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="//body/div//div//div/head">
+    <!-- On traite les <head> des <div> de troisième niveau -->
+    <xsl:template match="//body/div/div/div/head">
         <xsl:element name="h3">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:copy>
@@ -520,12 +524,14 @@
         </xsl:element>
     </xsl:template>
 
+    <!-- On traite les <p> -->
     <xsl:template match="//body//p">
         <xsl:element name="p">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
 
+    <!-- On traite les <gap> -->
     <xsl:template match="//gap">
         <xsl:element name="p">
             <xsl:attribute name="class">text-danger</xsl:attribute>
@@ -533,6 +539,7 @@
         </xsl:element>
     </xsl:template>
 
+    <!-- On traite les <emph> dans les <p> pour que l'affichage soit également en italique dans la sortie HTML -->
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
             <xsl:apply-templates/>
