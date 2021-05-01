@@ -9,7 +9,8 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-between"><a class="navbar-brand" style="padding-left: 5px" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/homepage.html">Les Fils de famille, Eugène Sue</a><ul class="navbar-nav mr-auto">
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/original_edition.html">Edition d'origine</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/transcription.html">Transcription</a></li>
-            <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/transcription_enrichie.html">Transcription enrichie</a></li>
+            <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/transcription_enrichie.html">Transcription
+                  enrichie</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/pers_index.html">Index des personnages</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/place_index.html">Index des noms de lieux</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/relationships.html">Relations entre les
@@ -69,9 +70,9 @@
                     
                     // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
                     // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
-                    // s'en occupent donc, mais ont pour ici valeur de démonstration. 
+                    // s'en occupent donc, mais ont pour ici valeur de démonstration.
                     // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage. Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
-                    // Avec xsl:text on s'assure qu'on construit un array JavaScript valide. 
+                    // Avec xsl:text on s'assure qu'on construit un array JavaScript valide.
                     // On utilise un xsl:if pour construire un array JavaScript valide, au cas où les groupes de personnages seraient plus de 1.
                     // On n'applique pas ce xsl:if sur la boucle des personnages uniques car l'encodage XML comporte un groupe de personnages.
                     // Des utilisations de count() sont effectuées plus bas.
@@ -88,7 +89,7 @@
                 
                 
                 function drawGenevieveSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',16
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',20
 ],[ 'Charles Delmare',47
 ],[ 'Le père Delmare',46
 ]]);
@@ -109,7 +110,8 @@
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',10
 ],[ 'Charles Delmare',28
 ],[ 'Le père Delmare',19
-                    ], ['La famille Dumirail', 0]]);
+],[ 'La famille Dumirail',0
+]]);
                     
                     var options = {
                         'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
