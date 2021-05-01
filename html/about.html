@@ -9,6 +9,7 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark justify-content-between"><a class="navbar-brand" style="padding-left: 5px" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/homepage.html">Les Fils de famille, Eugène Sue</a><ul class="navbar-nav mr-auto">
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/original_edition.html">Edition d'origine</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/transcription.html">Transcription</a></li>
+            <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/transcription_enrichie.html">Transcription enrichie</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/pers_index.html">Index des personnages</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/place_index.html">Index des noms de lieux</a></li>
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/relationships.html">Relations entre les
@@ -17,94 +18,68 @@
             <li class="nav-item"><a class="nav-link" href="file:/home/hugoscheithauer/Dev/xslt/les_fils_de_famille_SUE_xslt/html/about.html">A propos</a></li>
          </ul>
       </nav>
-      <div class="container d-flex justify-content-center">
-         <h1>Analyses statistiques de l'extrait encodé</h1>
-      </div>
       <div class="container">
-         <div class="d-flex justify-content-center" id="SpeechDistributionChart"></div>
-      </div>
-      <div class="container">
-         <table class="columns">
-            <tr>
-               <td>
-                  <div style="margin:10px; border: 1px solid #ccc" id="GenevieveSpeechDistributionChart"></div>
-               </td>
-               <td>
-                  <div style="margin:10px; border: 1px solid #ccc" id="CharlesDelmareSpeechDistributionChart"></div>
-               </td>
-               <td>
-                  <div style="margin:10px; border: 1px solid #ccc" id="PereDelmareSpeechDistributionChart"></div>
-               </td>
-            </tr>
-         </table>
+         <h1 style="text-align: center; padding: 20px;">Projet d'édition numérique -
+            Les fils de famille, Eugène SUE (1856), édité par la librairie Michel
+            Lévy Frères (1862)</h1>
+         <h2 style="text-align: center; padding: 10px;">Encodage XML-TEI</h2>
+         <p>Ce projet d'édition numérique résulte de l'encodage en XML-TEI d'un
+            passage du roman-feuilleton Les Fils de famille, écrit par Eugène Sue, à
+            l'aide d'une ODD et d'une RNG personnalisée. L'encodage a été réalisé à
+            partir de l'édition numérisée, disponible sur <a href="https://gallica.bnf.fr/ark:/12148/bpt6k58180814/">Gallica</a>.
+            Ces règles spécifiques ont été appliquées dans le but de :</p>
+         <ul>
+            <li>Mettre en relation Les Fils de famille avec un corpus plus important
+               de romans-feuilletons.</li>
+            <li>Présenter l'histoire de la librairie Michel Lévy Frères par rapport
+               aux oeuvres qu'elle a édité.</li>
+            <li>Mettre en relief la structure littéraire de l'oeuvre textuelle
+               encodée. Se faisant, cet encodage est propice à la création d'un
+               outil de recherche scientifique, facilitant la navigation dans
+               l'oeuvre.</li>
+            <li>Etudier les rapports entre les personnages, les espaces de parole
+               qui leurs sont dédiés, ainsi que leur fréquence d'apparition et de
+               mention respective dans l'oeuvre, selon les contextes, dans le but
+               de produire des données statistiques. Cet encodage pourrait
+               permettre, à terme, une analyse poussée des différentes dynamiques
+               propres aux relations entre les personnages.</li>
+         </ul>
+         <h2 style="text-align: center; padding: 10px;">Transformations XSL</h2>
+         <p>Les transformations XSL ont pour but de réaliser une sortie HTML depuis
+            l'encodage en XML. L'édition numérique se présente ainsi sous la forme
+            de plusieurs pages HTML :</p>
+         <ul>
+            <li>Une page d'accueil</li>
+            <li>Les informations bibliographiques de l'édition d'origine</li>
+            <li>La transcription du passage encodé</li>
+            <li>L'index des personnages</li>
+            <li>L'index des noms de lieux</li>
+            <li>Une page détaillant les relations entre les personnages</li>
+            <li>Une page dédiée aux analyses statistiques des relations entre les
+               personnages, à partir de l'encodage des dialogues entre ceux-ci</li>
+            <li>Une page à propos donnant des informations sur le projet</li>
+         </ul>
+         <h2 style="text-align: center; padding: 10px;">Evaluation</h2>
+         <p>Ce projet a été réalisé par <a href="https://github.com/HugoSchtr">Hugo
+               Scheithauer</a> dans le cadre de l'évaluation du module d'XML-TEI et
+            d'XSLT du <a href="http://www.chartes.psl.eu/fr/cursus/master-technologies-numeriques-appliquees-histoire">Master 2 "Technologies appliquées à l'histoire"</a> de l'Ecole
+            nationale des chartes. La feuille de transformation XSL doit répondre
+            aux critères suivants :</p>
+         <ul>
+            <li>Mettre en place une structure d'accueil HTML</li>
+            <li>Rédiger des règles simples avec un Xpath valide pour insérer des
+               informations du document source dans le document de sortie</li>
+            <li>Créer une ou des règles avec des conditions</li>
+            <li>Utiliser une ou des règles for-each uniquement si cela est
+               nécessaire</li>
+            <li>Proposer un code facile à lire et commenté</li>
+            <li>Simplifier le plus possible ses règles XSL</li>
+         </ul>
       </div>
    </body>
    <footer class="text-center text-white" style="background-color: #f1f1f1;">
       <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
          <p>Hugo Scheithauer - 2021</p>
       </div>
-   </footer><script type="text/javascript">
-                    google.charts.load('current', {'packages':['corechart']});
-                    google.charts.setOnLoadCallback(drawSpeechDistributionChart);
-                    google.charts.setOnLoadCallback(drawGenevieveSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
-                    
-                    function drawSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Distribution de l'espace de parole"],
-                    ['Geneviève', 9],
-                    ['Charles Delmare',  8],
-                    ['Le Père Delmare', 5],
-                    ]);
-                    
-                    var options = {'title':"Distribution de l'espace de parole", 'width':550, 'height':400};
-                    
-                    var chart = new google.visualization.PieChart(document.getElementById('SpeechDistributionChart'));
-                        chart.draw(data, options);
-                        }
-                        
-                        function drawGenevieveSpeechDistributionChart() {
-                        var data = google.visualization.arrayToDataTable([
-                        ['Task', "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise"],
-                        ['Geneviève', 16],
-                    ['Charles Delmare',  47],
-                    ['Le Père Delmare', 46],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise", 'width':400, 'height':400};
-                    
-                    var chart = new google.visualization.PieChart(document.getElementById('GenevieveSpeechDistributionChart'));
-                    chart.draw(data, options);
-                    }
-                    
-                    
-                    function drawCharlesDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', 10],
-                    ['Charles Delmare',  28],
-                    ['Le Père Delmare', 19],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris", 'width':400, 'height':400};
-                    
-                    var chart = new google.visualization.PieChart(document.getElementById('CharlesDelmareSpeechDistributionChart'));
-                    chart.draw(data, options);
-                    }
-                    
-                    
-                    function drawPereDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', 4],
-                    ['Charles Delmare',  23],
-                    ['Le Père Delmare', 28],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues du Père Delmare, lui y compris", 'width':400, 'height':400};
-                    
-                    var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
-                    chart.draw(data, options);
-                    }                    
-                </script></html>
+   </footer>
+</html>
