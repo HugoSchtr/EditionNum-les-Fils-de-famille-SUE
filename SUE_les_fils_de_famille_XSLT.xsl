@@ -40,6 +40,10 @@
             <xsl:value-of select="concat($witfile, 'html/transcription', '.html')"/>
         </xsl:variable>
 
+        <xsl:variable name="path_transcription_enrichie">
+            <xsl:value-of select="concat($witfile, 'html/transcription_enrichie', '.html')"/>
+        </xsl:variable>
+
         <xsl:variable name="path_original_edition">
             <xsl:value-of select="concat($witfile, 'html/original_edition', '.html')"/>
         </xsl:variable>
@@ -96,6 +100,10 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{$path_transcription}">Transcription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{$path_transcription_enrichie}">Transcription
+                            enrichie</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{$path_pers_index}">Index des personnages</a>
@@ -266,6 +274,22 @@
             </html>
         </xsl:result-document>
 
+        <xsl:result-document href="{$path_transcription_enrichie}">
+            <html>
+                <xsl:copy-of select="$head"/>
+                <body>
+                    <xsl:copy-of select="$nav_bar"/>
+                    <div class="container">
+                        <xsl:element name="div">
+                            <xsl:apply-templates select="//body" mode="enrichi"/>
+                        </xsl:element>
+
+                    </div>
+                </body>
+                <xsl:copy-of select="$footer"/>
+            </html>
+        </xsl:result-document>
+
         <!-- On crée la page HTML pour les analyses statistiques -->
         <!-- Pour les analyses statistiques, on utilise la librairie JavaScript "Google Charts" permettant de réaliser des diagrammes. -->
         <xsl:result-document href="{$path_analysis}" method="html" indent="yes">
@@ -300,6 +324,11 @@
                         </table>
                         <div style="margin:10px; border: 1px solid #ccc" id="test"/>
                     </div>
+                    <p>
+                        <xsl:value-of
+                            select="count(//said[@who = '#Geneviève']//rs[@ref = '#famille_Dumirail'])"
+                        />
+                    </p>
                 </body>
                 <xsl:copy-of select="$footer"/>
                 <!-- Ci-dessous, le script JavaScript permettant l'affichage des diagrammes. -->
@@ -322,14 +351,27 @@
                         <xsl:variable name="person_id">
                             <xsl:value-of select="./@xml:id"/>
                         </xsl:variable>
-                        ['<xsl:value-of select="$person"/>', <xsl:value-of select="count(//said[@who = concat('#', $person_id)])"/>]<xsl:if test="position() != last()">, </xsl:if>
+                        ['<xsl:value-of select="$person"/>', <xsl:value-of select="count(//said[@who = concat('#', $person_id)])"/>]<xsl:text>,</xsl:text>
+                    </xsl:for-each>
+                    <xsl:for-each select="//listPerson/personGrp">
+                        <xsl:variable name="person_grp">
+                            <xsl:value-of select="name"/>
+                        </xsl:variable>
+                        <xsl:variable name="person_grp_id">
+                            <xsl:value-of select="./@xml:id"/>
+                        </xsl:variable>
+                        ['<xsl:value-of select="$person_grp"/>', <xsl:value-of select="count(//said[@who = concat('#', $person_grp_id)])"/>]<xsl:if test="position() != last()">, </xsl:if>
                     </xsl:for-each>
 ]);
                     
-                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
-                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle
-                    // s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
-                    // On utilise un xsl:if pour construire un array JavaScript valide
+                    // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
+                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
+                    // s'en occupent donc, mais ont pour ici valeur de démonstration.
+                    // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage. Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
+                    // Avec xsl:text on s'assure qu'on construit un array JavaScript valide.
+                    // On utilise un xsl:if pour construire un array JavaScript valide, au cas où les groupes de personnages seraient plus de 1.
+                    // On n'applique pas ce xsl:if sur la boucle des personnages uniques car l'encodage XML comporte un groupe de personnages.
+                    // Des utilisations de count() sont effectuées plus bas.
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
@@ -346,7 +388,7 @@
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
-],]);
+]]);
                     
                     // Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
                     
@@ -364,6 +406,7 @@
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
+],[ 'La famille Dumirail',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#famille_Dumirail'])"/>
 ]]);
                     
                     var options = {
@@ -388,10 +431,7 @@
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                }
-                
-                
-                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne// parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une// seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script>
+                }// Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne// parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une// seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script>
             </html>
         </xsl:result-document>
 
@@ -405,7 +445,7 @@
                         <div style="text-align: center; padding-top: 20px;">
                             <h1>Relations entre les personnages</h1>
                             <br/>
-                            <!-- On utilise une boucle xsl:for-each pour former une structure HTML pour chaque l<istRelation> -->
+                            <!-- On utilise une boucle xsl:for-each pour former une structure HTML pour chaque <listRelation> -->
                             <xsl:for-each select="//listRelation">
                                 <h2>
                                     <xsl:value-of select="./@type"/>
@@ -419,7 +459,7 @@
                                             <xsl:when test="./@active">
                                                 <!-- On récupère les valeurs des attributs @active et @passive pour récupérer les persName plus tard. -->
                                                 <xsl:variable name="id_active">
-                                                    <!-- On transforme le pointeur avec replace() -->
+                                                  <!-- On transforme le pointeur avec replace() -->
                                                   <xsl:value-of select="./replace(@active, '#', '')"
                                                   />
                                                 </xsl:variable>
@@ -435,10 +475,11 @@
                                             </xsl:when>
                                             <!-- Si <relation> ne possède pas d'attribut @active, alors c'est qu'il y a probablement un attribut @mutual, que l'on va traiter ici. -->
                                             <xsl:otherwise>
-                                                    <!-- On utilise la fonction XPath translate() pour remplacer le # et le _ par un espace -->
-                                                    <!-- On ne transforme pas les pointeurs par commodité, la chaîne de caractère comprenant en effet deux pointeurs, difficile à traiter et à séparer en deux entités séparées qu'on pourrait exploiter plus tard. On se contente donc du pointeur pour afficher le nom des personnages. Cette solution est applicable à @active et @passive également, l'output étant finalement le même. Cette technique a l'avantage de ne pas nécessiter la création de variable. -->
+                                                <!-- On utilise la fonction XPath translate() pour remplacer le # et le _ par un espace -->
+                                                <!-- On ne transforme pas les pointeurs par commodité, la chaîne de caractère comprenant en effet deux pointeurs, difficile à traiter et à séparer en deux entités séparées qu'on pourrait exploiter plus tard. On se contente donc du pointeur pour afficher le nom des personnages. Cette solution est applicable à @active et @passive également, l'output étant finalement le même. Cette technique a l'avantage de ne pas nécessiter la création de variable. -->
                                                 <dd>
-                                                    <xsl:value-of select="./translate(@mutual, '#_', '  ')"/>
+                                                  <xsl:value-of
+                                                  select="./translate(@mutual, '#_', '  ')"/>
                                                 </dd>
                                             </xsl:otherwise>
                                         </xsl:choose>
@@ -456,17 +497,94 @@
             </html>
         </xsl:result-document>
 
+        <xsl:result-document href="{$path_about}" method="html" indent="yes">
+            <html>
+                <xsl:copy-of select="$head"/>
+                <body>
+                    <xsl:copy-of select="$nav_bar"/>
+                    <div class="container">
+                        <h1 style="text-align: center; padding: 20px;">Projet d'édition numérique -
+                            Les fils de famille, Eugène SUE (1856), édité par la librairie Michel
+                            Lévy Frères (1862)</h1>
+                        <h2 style="text-align: center; padding: 10px;">Encodage XML-TEI</h2>
+                        <p>Ce projet d'édition numérique résulte de l'encodage en XML-TEI d'un
+                            passage du roman-feuilleton Les Fils de famille, écrit par Eugène Sue, à
+                            l'aide d'une ODD et d'une RNG personnalisée. L'encodage a été réalisé à
+                            partir de l'édition numérisée, disponible sur <a
+                                href="https://gallica.bnf.fr/ark:/12148/bpt6k58180814/">Gallica</a>.
+                            Ces règles spécifiques ont été appliquées dans le but de :</p>
+                        <ul>
+                            <li>Mettre en relation Les Fils de famille avec un corpus plus important
+                                de romans-feuilletons.</li>
+                            <li>Présenter l'histoire de la librairie Michel Lévy Frères par rapport
+                                aux oeuvres qu'elle a édité.</li>
+                            <li>Mettre en relief la structure littéraire de l'oeuvre textuelle
+                                encodée. Se faisant, cet encodage est propice à la création d'un
+                                outil de recherche scientifique, facilitant la navigation dans
+                                l'oeuvre.</li>
+                            <li>Etudier les rapports entre les personnages, les espaces de parole
+                                qui leurs sont dédiés, ainsi que leur fréquence d'apparition et de
+                                mention respective dans l'oeuvre, selon les contextes, dans le but
+                                de produire des données statistiques. Cet encodage pourrait
+                                permettre, à terme, une analyse poussée des différentes dynamiques
+                                propres aux relations entre les personnages.</li>
+                        </ul>
+                        <h2 style="text-align: center; padding: 10px;">Transformations XSL</h2>
+                        <p>Les transformations XSL ont pour but de réaliser une sortie HTML depuis
+                            l'encodage en XML. L'édition numérique se présente ainsi sous la forme
+                            de plusieurs pages HTML :</p>
+                        <ul>
+                            <li>Une page d'accueil</li>
+                            <li>Les informations bibliographiques de l'édition d'origine</li>
+                            <li>La transcription du passage encodé</li>
+                            <li>L'index des personnages</li>
+                            <li>L'index des noms de lieux</li>
+                            <li>Une page détaillant les relations entre les personnages</li>
+                            <li>Une page dédiée aux analyses statistiques des relations entre les
+                                personnages, à partir de l'encodage des dialogues entre ceux-ci</li>
+                            <li>Une page à propos donnant des informations sur le projet</li>
+                        </ul>
+                        <h2 style="text-align: center; padding: 10px;">Evaluation</h2>
+                        <p>Ce projet a été réalisé par <a href="https://github.com/HugoSchtr">Hugo
+                                Scheithauer</a> dans le cadre de l'évaluation du module d'XML-TEI et
+                            d'XSLT du <a
+                                href="http://www.chartes.psl.eu/fr/cursus/master-technologies-numeriques-appliquees-histoire"
+                                >Master 2 "Technologies appliquées à l'histoire"</a> de l'Ecole
+                            nationale des chartes. La feuille de transformation XSL doit répondre
+                            aux critères suivants :</p>
+                        <ul>
+                            <li>Mettre en place une structure d'accueil HTML</li>
+                            <li>Rédiger des règles simples avec un Xpath valide pour insérer des
+                                informations du document source dans le document de sortie</li>
+                            <li>Créer une ou des règles avec des conditions</li>
+                            <li>Utiliser une ou des règles for-each uniquement si cela est
+                                nécessaire</li>
+                            <li>Proposer un code facile à lire et commenté</li>
+                            <li>Simplifier le plus possible ses règles XSL</li>
+                        </ul>
+                    </div>
+                </body>
+                <xsl:copy-of select="$footer"/>
+            </html>
+        </xsl:result-document>
+
     </xsl:template>
 
     <!-- Templates -->
 
     <!-- Template d'affichage de l'index des personnages -->
-    <xsl:template name="pers_index">
+    <xsl:template name="pers_index" match="//listPerson">
         <!-- On écrit une boucle for-each pour pouvoir trier par ordre alphabétique les personnages avec xsl:sort -->
-        <xsl:for-each select="//listPerson/person">
-            <xsl:sort select="./persName" order="ascending"/>
+        <xsl:for-each select="//person">
+            <xsl:sort select="persName" order="ascending"/>
             <li>
                 <xsl:value-of select="concat(persName, ' : ', note)"/>
+            </li>
+        </xsl:for-each>
+        <xsl:for-each select="//personGrp">
+            <xsl:sort select="persName" order="ascending"/>
+            <li>
+                <xsl:value-of select="concat(name, ' : ', note)"/>
             </li>
         </xsl:for-each>
     </xsl:template>
@@ -481,11 +599,16 @@
 
                 <xsl:value-of select="concat(' (', @type, ')')"/>
 
-                <!-- Si le lieu a une information de région (!= 'none', dans l'encodage XML), on la récupère, sinon, on ne fait rien.. -->
+                <!-- Si le lieu a une information de ville (étant donné que l'encodage XML utilise des balises autofermantes pour <settlement>, on teste avec string-length() la longueur de la chaîne de caractère, et on vérifie que la chaîne de caractères est différente de 'none' -->
+                <xsl:if
+                    test="string-length(placeName//settlement) > 1 and placeName//settlement != 'none'">
+                    <xsl:value-of select="concat(', ', placeName//settlement)"/>
+                </xsl:if>
+
+                <!-- Si le lieu a une information de région (!= 'none', dans l'encodage XML), on la récupère, sinon, on ne fait rien. -->
                 <xsl:if test="placeName//region != 'none'">
                     <xsl:value-of select="concat(', ', placeName//region)"/>
                 </xsl:if>
-
                 <!-- Si le lieu a une information de note, on la récupère. Sinon, on met directement un '.' -->
                 <xsl:choose>
                     <xsl:when test="note">
@@ -498,8 +621,9 @@
     </xsl:template>
 
     <!-- Règles pour afficher la transcription -->
+    <!-- Afin d'afficher une transcription avec seulement le texte, on utilise le mode #all -->
     <!-- On traite les <head> des <div> de premier niveau -->
-    <xsl:template match="//body/div/head">
+    <xsl:template match="//body/div/head" mode="#all">
         <xsl:element name="h1">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="."/>
@@ -507,7 +631,7 @@
     </xsl:template>
 
     <!-- On traite les <head> des <div> de deuxième niveau -->
-    <xsl:template match="//body/div/div/head">
+    <xsl:template match="//body/div/div/head" mode="#all">
         <xsl:element name="h2">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="."/>
@@ -515,24 +639,22 @@
     </xsl:template>
 
     <!-- On traite les <head> des <div> de troisième niveau -->
-    <xsl:template match="//body/div/div/div/head">
+    <xsl:template match="//body/div/div/div/head" mode="#all">
         <xsl:element name="h3">
             <xsl:attribute name="class">text-center</xsl:attribute>
-            <xsl:copy>
-                <xsl:apply-templates/>
-            </xsl:copy>
+            <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
 
     <!-- On traite les <p> -->
-    <xsl:template match="//body//p">
+    <xsl:template match="//body//p" mode="#all">
         <xsl:element name="p">
-            <xsl:apply-templates/>
+            <xsl:apply-templates mode="#current"/>
         </xsl:element>
     </xsl:template>
 
     <!-- On traite les <gap> -->
-    <xsl:template match="//gap">
+    <xsl:template match="//gap" mode="#all">
         <xsl:element name="p">
             <xsl:attribute name="class">text-danger</xsl:attribute>
             <u>Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
@@ -542,6 +664,38 @@
     <!-- On traite les <emph> dans les <p> pour que l'affichage soit également en italique dans la sortie HTML -->
     <xsl:template match="emph[@rend = 'italic']">
         <xsl:element name="i">
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+
+    <!-- Afin de proposer une transcription enrichie, on crée le mode enrichi, qui permettra d'entourer tous les persName et les placeName avec une balise <a> renvoyant à l'index des noms de lieux, ou l'index des noms de personnage. -->
+    <xsl:template match="placeName" mode="enrichi">
+        <!-- On doit recréer les variables des chemins de fichier car celles créées initialement sont dans le scope de la première template, et ne sont donc pas disponibles en dehors. -->
+        <xsl:variable name="witfile">
+            <xsl:value-of select="replace(base-uri(.), 'SUE_les_fils_de_famille.xml', '')"/>
+        </xsl:variable>
+        <xsl:variable name="path_place_index">
+            <xsl:value-of select="concat($witfile, 'html/place_index', '.html')"/>
+        </xsl:variable>
+        <xsl:element name="a">
+            <xsl:attribute name="href">
+                <xsl:value-of select="$path_place_index"/>
+            </xsl:attribute>
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="persName" mode="enrichi">
+        <xsl:variable name="witfile">
+            <xsl:value-of select="replace(base-uri(.), 'SUE_les_fils_de_famille.xml', '')"/>
+        </xsl:variable>
+        <xsl:variable name="path_pers_index">
+            <xsl:value-of select="concat($witfile, 'html/pers_index', '.html')"/>
+        </xsl:variable>
+        <xsl:element name="a">
+            <xsl:attribute name="href">
+                <xsl:value-of select="$path_pers_index"/>
+            </xsl:attribute>
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
