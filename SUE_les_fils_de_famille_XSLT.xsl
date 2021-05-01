@@ -52,6 +52,7 @@
             <xsl:value-of select="concat($witfile, 'html/about', '.html')"/>
         </xsl:variable>
 
+
         <!-- BRIQUES DE CONSTRUCTION DES SORTIES HTML -->
 
         <!-- On crée le head HTML -->
@@ -137,14 +138,20 @@
                 <body>
                     <xsl:copy-of select="$nav_bar"/>
                     <div style="padding: 20px;">
-                        <img class="rounded mx-auto d-block"
-                            src="../image/illustration_fils_de_famille_p1.png"
-                            style="width: 38rem; height: auto"/>
+                        <figure>
+                            <a href="https://gallica.bnf.fr/ark:/12148/bpt6k58180814/f8.item">
+                                <img class="rounded mx-auto d-block"
+                                    src="../image/illustration_fils_de_famille_p1.png"
+                                    style="width: 38rem; height: auto"/>
+                            </a>
+                            <figcaption style="text-align:center;">Image d'illustration des Fils de
+                                famille, folio 8, édition Michel Lévy Frères, 1862</figcaption>
+                        </figure>
                     </div>
                     <div class="container">
                         <div style="text-align: center; padding-top: 20px;">
                             <p>Bienvenue dans ce projet d'édition numérique du roman-feuilleton
-                                    <i>Les Fils de famille</i> d'Eugène SUE (1856).</p>
+                                    <i>Les Fils de famille</i> d'Eugène SUE.</p>
                             <p>
                                 <xsl:value-of select="//encodingDesc"/>
                             </p>
@@ -156,7 +163,8 @@
                                     href="{//sourceDesc//publicationStmt/distributor/@facs}"
                                     >adresse</a>.</p>
                             <p>Cette édition propose d'enrichir la lecture de l'oeuvre originale en
-                                donnant des informations sur les personnages et leurs relations.</p>
+                                analysant le rapport des personnages par une analyse
+                                statistique.</p>
                             <p>Vous pouvez naviguer à travers le projet grâce à la barre de
                                 navigation en haut de cette page. Bonne visite !</p>
                         </div>
@@ -200,6 +208,7 @@
             </html>
         </xsl:result-document>
 
+        <!-- On crée la sortie HTML pour afficher les informations de l'édition originale -->
         <xsl:result-document href="{$path_original_edition}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -240,22 +249,24 @@
             </html>
         </xsl:result-document>
 
+        <!-- On crée la sortie HTML de la transcription -->
         <xsl:result-document href="{$path_transcription}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
                 <body>
                     <xsl:copy-of select="$nav_bar"/>
                     <div class="container">
-                            <xsl:element name="div">
-                                <xsl:apply-templates select="//body"/>
-                            </xsl:element>
-                        
+                        <xsl:element name="div">
+                            <xsl:apply-templates select="//body"/>
+                        </xsl:element>
+
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
             </html>
         </xsl:result-document>
-        
+
+        <!-- On crée la page HTML pour les analyses statistiques -->
         <!-- Pour les analyses statistiques, on utilise la librairie JavaScript "Google Charts" permettant de réaliser des diagrammes. -->
         <xsl:result-document href="{$path_analysis}" method="html" indent="yes">
             <html>
@@ -287,8 +298,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <div style="margin:10px; border: 1px solid #ccc"
-                            id="test"/>
+                        <div style="margin:10px; border: 1px solid #ccc" id="test"/>
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
@@ -301,26 +311,25 @@
                     google.charts.setOnLoadCallback(drawGenevieveSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
-                    google.charts.setOnLoadCallback(drawChart);
                     
                     
                     // Premier diagramme concernant la répartition de l'espace de parole
                     function drawSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],
-                    <xsl:for-each select="//listPerson/person">
+                        var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],<xsl:for-each select="//listPerson/person">
                         <xsl:variable name="person">
                             <xsl:value-of select="persName"/>
                         </xsl:variable>
                         <xsl:variable name="person_id">
                             <xsl:value-of select="./@xml:id"/>
                         </xsl:variable>
-                        ['<xsl:value-of select="$person"/>', <xsl:value-of select="count(//said[@who=concat('#',$person_id)])"/>],
+                        ['<xsl:value-of select="$person"/>', <xsl:value-of select="count(//said[@who = concat('#', $person_id)])"/>]<xsl:if test="position() != last()">, </xsl:if>
                     </xsl:for-each>
-                    ]);
+]);
                     
-                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y 
-                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle 
+                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
+                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle
                     // s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
+                    // On utilise un xsl:if pour construire un array JavaScript valide
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
@@ -338,8 +347,8 @@
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
 ],]);
-
-// Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
+                    
+                    // Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
                     
                     var options = {
                         'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
@@ -355,7 +364,7 @@
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
-],]);
+]]);
                     
                     var options = {
                         'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
@@ -371,7 +380,7 @@
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'])"/>
 ],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
 ],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'])"/>
-],]);
+]]);
                     
                     var options = {
                         'title': "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris", 'width': 400, 'height': 400
@@ -379,15 +388,71 @@
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                }         
+                }
                 
                 
-                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne 
-                // parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une 
-                // seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui 
-                // s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.
-                                   
-                </script>
+                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne// parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une// seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script>
+            </html>
+        </xsl:result-document>
+
+        <!-- On crée la sortie HTML pour afficher les relations entre les personnages -->
+        <xsl:result-document href="{$path_relationships}" method="html" indent="yes">
+            <html>
+                <xsl:copy-of select="$head"/>
+                <body>
+                    <xsl:copy-of select="$nav_bar"/>
+                    <div class="container">
+                        <div style="text-align: center; padding-top: 20px;">
+                            <h1>Relations entre les personnages</h1>
+                            <br/>
+                            <!-- On utilise une boucle xsl:for-each pour former une structure HTML pour chaque l<istRelation> -->
+                            <xsl:for-each select="//listRelation">
+                                <h2>
+                                    <xsl:value-of select="./@type"/>
+                                </h2>
+                                <!-- Etant donné qu'une <listRelation> peut contenir plusieurs <relation>, on crée une boucle for-each pour toutes les traiter. L'encodage XML utilisé pour la transformation ne comprend pas plusieurs <relation> dans les <listRelation>, cependant, cette structure a tout de même mise en place dans le cas où cela serait nécessaire. Cette structure a donc valeur de démonstration. -->
+                                <xsl:for-each select="./relation">
+                                    <dl>
+                                        <dt>Personnages</dt>
+                                        <xsl:choose>
+                                            <!-- On utilise xsl:choose pour tester si <relation> comprend un attribut @ active. Si cela est le cas, cela sous-entend la majeure partie du temps l'exitence d'un attribut @passive. -->
+                                            <xsl:when test="./@active">
+                                                <!-- On récupère les valeurs des attributs @active et @passive pour récupérer les persName plus tard. -->
+                                                <xsl:variable name="id_active">
+                                                    <!-- On transforme le pointeur avec replace() -->
+                                                  <xsl:value-of select="./replace(@active, '#', '')"
+                                                  />
+                                                </xsl:variable>
+                                                <xsl:variable name="id_passive">
+                                                  <xsl:value-of
+                                                  select="./replace(@passive, '#', '')"/>
+                                                </xsl:variable>
+                                                <dd><xsl:value-of
+                                                  select="//person[@xml:id = $id_active]/persName"/>
+                                                  &#8594; <xsl:value-of
+                                                  select="//person[@xml:id = $id_passive]/persName"
+                                                  /></dd>
+                                            </xsl:when>
+                                            <!-- Si <relation> ne possède pas d'attribut @active, alors c'est qu'il y a probablement un attribut @mutual, que l'on va traiter ici. -->
+                                            <xsl:otherwise>
+                                                    <!-- On utilise la fonction XPath translate() pour remplacer le # et le _ par un espace -->
+                                                    <!-- On ne transforme pas les pointeurs par commodité, la chaîne de caractère comprenant en effet deux pointeurs, difficile à traiter et à séparer en deux entités séparées qu'on pourrait exploiter plus tard. On se contente donc du pointeur pour afficher le nom des personnages. Cette solution est applicable à @active et @passive également, l'output étant finalement le même. Cette technique a l'avantage de ne pas nécessiter la création de variable. -->
+                                                <dd>
+                                                    <xsl:value-of select="./translate(@mutual, '#_', '  ')"/>
+                                                </dd>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                        <dt>Type de relation</dt>
+                                        <dd>
+                                            <xsl:value-of select="./@name"/>
+                                        </dd>
+                                    </dl>
+                                </xsl:for-each>
+                            </xsl:for-each>
+                        </div>
+                    </div>
+                </body>
+                <xsl:copy-of select="$footer"/>
             </html>
         </xsl:result-document>
 
@@ -431,21 +496,21 @@
             </li>
         </xsl:for-each>
     </xsl:template>
-    
+
     <xsl:template match="//body/div/head">
         <xsl:element name="h1">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="//body/div//div/head">
         <xsl:element name="h2">
             <xsl:attribute name="class">text-center</xsl:attribute>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="//body/div//div//div/head">
         <xsl:element name="h3">
             <xsl:attribute name="class">text-center</xsl:attribute>
@@ -454,17 +519,17 @@
             </xsl:copy>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="//body//p">
         <xsl:element name="p">
             <xsl:apply-templates/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="//gap">
         <xsl:element name="p">
             <xsl:attribute name="class">text-danger</xsl:attribute>
-            <u> Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
+            <u>Manque dans la version numérisée : <xsl:value-of select="//gap/desc"/></u>
         </xsl:element>
     </xsl:template>
 
