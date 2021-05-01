@@ -25,6 +25,8 @@
       </div>
       <div class="container">
          <table class="columns">
+            <caption style="caption-side:top;">Répartition des mentions des
+               personnages dans tous les dialogues selon les personnages</caption>
             <tr>
                <td>
                   <div style="margin:10px; border: 1px solid #ccc" id="GenevieveSpeechDistributionChart"></div>
@@ -37,6 +39,7 @@
                </td>
             </tr>
          </table>
+         <div style="margin:10px; border: 1px solid #ccc" id="test"></div>
       </div>
    </body>
    <footer class="text-center text-white" style="background-color: #f1f1f1;">
@@ -44,67 +47,86 @@
          <p>Hugo Scheithauer - 2021</p>
       </div>
    </footer><script type="text/javascript">
-                    google.charts.load('current', {'packages':['corechart']});
+                    google.charts.load('current', {
+                        'packages':[ 'corechart']
+                    });
                     google.charts.setOnLoadCallback(drawSpeechDistributionChart);
                     google.charts.setOnLoadCallback(drawGenevieveSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
-                   google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
+                    google.charts.setOnLoadCallback(drawCharlesDelmareSpeechDistributionChart);
+                    google.charts.setOnLoadCallback(drawPereDelmareSpeechDistributionChart);
                     
+                    
+                    // Premier diagramme concernant la répartition de l'espace de parole
                     function drawSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Distribution de l'espace de parole"],
-                    ['Geneviève', 9],
-                    ['Charles Delmare',  8],
-                    ['Le Père Delmare', 5],
-                    ]);
+                        var data = google.visualization.arrayToDataTable([[ 'Task', "Distribution de l'espace de parole"],
+                        ['Geneviève', 9], 
+                        ['Charles Delmare', 8], 
+                        ['Le Père Delmare', 5]
+]);
                     
-                    var options = {'title':"Distribution de l'espace de parole", 'width':550, 'height':400};
+                    // Les valeurs récupérées grâce à cette boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
+                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Cette boucle
+                    // s'en occupe donc, mais a pour ici valeur de démonstration. Des utilisations de count() sont effectuées plus bas.
+                    // On utilise un xsl:if pour construire un array JavaScript valide
+                    
+                    var options = {
+                        'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('SpeechDistributionChart'));
-                        chart.draw(data, options);
-                        }
-                        
-                        function drawGenevieveSpeechDistributionChart() {
-                        var data = google.visualization.arrayToDataTable([
-                        ['Task', "Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise"],
-                        ['Geneviève', 16],
-                    ['Charles Delmare',  47],
-                    ['Le Père Delmare', 46],
-                    ]);
+                    chart.draw(data, options);
+                }
+                
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise.
+                
+                
+                function drawGenevieveSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',16
+],[ 'Charles Delmare',47
+],[ 'Le père Delmare',46
+],]);
                     
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Geneviève, elle y comprise", 'width':400, 'height':400};
+                    // Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
+                    
+                    var options = {
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('GenevieveSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }
+                }
+                
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris.
+                
+                function drawCharlesDelmareSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',10
+],[ 'Charles Delmare',28
+],[ 'Le père Delmare',19
+]]);
                     
-                    
-                    function drawCharlesDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', 10],
-                    ['Charles Delmare',  28],
-                    ['Le Père Delmare', 19],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris", 'width':400, 'height':400};
+                    var options = {
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('CharlesDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }
+                }
+                
+                // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris.
+                
+                function drawPereDelmareSpeechDistributionChart() {
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris"],[ 'Geneviève',4
+],[ 'Charles Delmare',23
+],[ 'Le père Delmare',28
+]]);
                     
-                    
-                    function drawPereDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([
-                    ['Task', "Fréquence de mention des autres personnages dans les dialogues de Charles Delmare, lui y compris"],
-                    ['Geneviève', 4],
-                    ['Charles Delmare',  23],
-                    ['Le Père Delmare', 28],
-                    ]);
-                    
-                    var options = {'title':"Fréquence de mention des autres personnages dans les dialogues du Père Delmare, lui y compris", 'width':400, 'height':400};
+                    var options = {
+                        'title': "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris", 'width': 400, 'height': 400
+                    };
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                    }                    
-                </script></html>
+                }
+                
+                
+                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne// parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une// seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script></html>
