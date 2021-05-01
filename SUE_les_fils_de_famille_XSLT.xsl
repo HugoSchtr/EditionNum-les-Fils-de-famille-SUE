@@ -579,12 +579,50 @@
             <xsl:sort select="persName" order="ascending"/>
             <li>
                 <xsl:value-of select="concat(persName, ' : ', note)"/>
+                <ul>
+                    <xsl:variable name="person_xml_id">
+                        <xsl:value-of select="./@xml:id"/>
+                    </xsl:variable>
+                    <xsl:for-each-group
+                        select="ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)]"
+                        group-by="ancestor::div[1]">
+                        <li>
+                            <xsl:value-of
+                                select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
+                            />
+                        </li>
+                    </xsl:for-each-group>
+                    <xsl:if
+                        test="not(ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)])">
+                        <xsl:for-each-group
+                            select="ancestor::TEI//body/div//said[@who = concat('#', $person_xml_id)]"
+                            group-by="ancestor::div[1]">
+                            <xsl:value-of
+                                select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
+                            />
+                        </xsl:for-each-group>
+                    </xsl:if>
+                </ul>
             </li>
         </xsl:for-each>
         <xsl:for-each select="//personGrp">
             <xsl:sort select="persName" order="ascending"/>
             <li>
                 <xsl:value-of select="concat(name, ' : ', note)"/>
+                <ul>
+                    <xsl:variable name="personGrp_xml_id">
+                        <xsl:value-of select="./@xml:id"/>
+                    </xsl:variable>
+                    <xsl:for-each-group
+                        select="ancestor::TEI//body/div//persName[@ref = concat('#', $personGrp_xml_id)]"
+                        group-by="ancestor::div[1]">
+                        <li>
+                            <xsl:value-of
+                                select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
+                            />
+                        </li>
+                    </xsl:for-each-group>
+                </ul>
             </li>
         </xsl:for-each>
     </xsl:template>
