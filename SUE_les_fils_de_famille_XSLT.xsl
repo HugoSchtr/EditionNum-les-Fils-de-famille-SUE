@@ -201,6 +201,7 @@
             </html>
         </xsl:result-document>
 
+        <!-- On crée l'index des noms de lieux -->
         <xsl:result-document href="{$path_place_index}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
