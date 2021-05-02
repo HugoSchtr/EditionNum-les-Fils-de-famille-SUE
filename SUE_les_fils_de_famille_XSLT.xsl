@@ -19,7 +19,7 @@
             <xsl:value-of select="replace(base-uri(.), 'SUE_les_fils_de_famille.xml', '')"/>
         </xsl:variable>
 
-        <!-- Pour chaque output HTML de l'édition numérique, on crée une variable qui stocke le chemin de l'output, en concaténant la variable witfile crée précédemment. -->
+        <!-- Pour chaque output HTML de l'édition numérique, on crée une variable qui stocke le chemin de l'output, en concaténant la variable witfile crée précédemment -->
         <xsl:variable name="path_homepage">
             <xsl:value-of select="concat($witfile, 'html/homepage', '.html')"/>
         </xsl:variable>
@@ -135,6 +135,7 @@
         </xsl:variable>
 
         <!-- SORTIES HTML -->
+
         <!-- Avec xsl:result-document, on écrit les règles de transformation pour les output
         Ici, on crée l'output HTML correspondant à la page d'accueil. -->
         <!-- @href permet d'indiquer le chemin du fichier de sortie
@@ -226,7 +227,7 @@
                         <h1>Informations bibligraphiques de l'édition d'origine</h1>
                         <ul>
                             <li>Titre : <xsl:value-of select="//biblFull/titleStmt/title"/></li>
-                            <!-- On utilise la fonction concat() pour concaténer plusieurs chaînes de caractères afin de mettre en page les informations. -->
+                            <!-- On utilise la fonction concat() pour concaténer plusieurs chaînes de caractères afin de mettre en page les informations -->
                             <li>Auteur : <xsl:value-of
                                     select="concat(//biblFull/titleStmt//forename, ' ', //biblFull/titleStmt//surname)"
                                 /></li>
@@ -267,13 +268,13 @@
                         <xsl:element name="div">
                             <xsl:apply-templates select="//body"/>
                         </xsl:element>
-
                     </div>
                 </body>
                 <xsl:copy-of select="$footer"/>
             </html>
         </xsl:result-document>
 
+        <!-- On crée la sortie HTML de la transcription enrichie grâce au mode "enrichi" -->
         <xsl:result-document href="{$path_transcription_enrichie}">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -324,15 +325,9 @@
                         </table>
                         <div style="margin:10px; border: 1px solid #ccc" id="test"/>
                     </div>
-                    <p>
-                        <xsl:value-of
-                            select="count(//said[@who = '#Geneviève']//rs[@ref = '#famille_Dumirail'])"
-                        />
-                    </p>
                 </body>
                 <xsl:copy-of select="$footer"/>
-                <!-- Ci-dessous, le script JavaScript permettant l'affichage des diagrammes. -->
-                <!-- réfléchir à l'utilité de la | -->
+                <!-- Ci-dessous, le script JavaScript commenté permettant l'affichage des diagrammes. -->
                 <script type="text/javascript">
                     google.charts.load('current', {
                         'packages':[ 'corechart']
@@ -365,14 +360,16 @@
                     </xsl:for-each>
 ]);
                     
-                    // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
-                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
+                    // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un simple count().
+                    // Cependant, dans le cas où il y aurait un nombre important de personnages,
+                    // on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
                     // s'en occupent donc, mais ont pour ici valeur de démonstration.
-                    // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage. Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
+                    // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage.
+                    // Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
                     // Avec xsl:text on s'assure qu'on construit un array JavaScript valide.
                     // On utilise un xsl:if pour construire un array JavaScript valide, au cas où les groupes de personnages seraient plus de 1.
                     // On n'applique pas ce xsl:if sur la boucle des personnages uniques car l'encodage XML comporte un groupe de personnages.
-                    // Des utilisations de count() sont effectuées plus bas.
+                    // Des utilisations de count() sans boucle sont effectuées plus bas.
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
@@ -387,11 +384,14 @@
                 
                 function drawGenevieveSpeechDistributionChart() {
                     var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Geneviève'] | //said[@who = '#Geneviève']//persName[@ref = '#Geneviève'])"/>
-],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#Charles_Delmare'] | //said[@who = '#Geneviève']//persName[@ref = '#Charles_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#père_Delmare'] | //said[@who = '#Geneviève']//persName[@ref = '#père_Delmare'])"/>
+],[ 'La famille Dumirail',<xsl:value-of select="count(//said[@who = '#Geneviève']//rs[@ref = '#famille_Dumirail'] | //said[@who = '#Geneviève']//persName[@ref = '#famille_Dumirail'])"/>
 ]]);
                     
                     // Pour récupérer les valeurs à partir des balises rs, on utilise la fonction count() qui va compter le nombre d'occurence
+                    // On ajoute la | pour sélectionner un autre node, en l'occurence celui des persName
+                    // De la sorte, on calcule toutes les mentions
                     
                     var options = {
                         'title': "Répartition des mentions des personnages dans l'intégralité des dialogues de Geneviève, elle y comprise", 'width': 400, 'height': 400
@@ -404,10 +404,10 @@
                 // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris.
                 
                 function drawCharlesDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'])"/>
-],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'])"/>
-],[ 'La famille Dumirail',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#famille_Dumirail'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues de Charles Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Geneviève'] | //said[@who = '#Charles_Delmare']//persName[@ref = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#Charles_Delmare'] | //said[@who = '#Charles_Delmare']//persName[@ref = '#Charles_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#père_Delmare'] | //said[@who = '#Charles_Delmare']//persName[@ref = '#père_Delmare'])"/>
+],[ 'La famille Dumirail',<xsl:value-of select="count(//said[@who = '#Charles_Delmare']//rs[@ref = '#famille_Dumirail'] | //said[@who = '#Charles_Delmare']//persName[@ref = '#famille_Dumirail'])"/>
 ]]);
                     
                     var options = {
@@ -421,9 +421,10 @@
                 // Diagramme affichant la répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris.
                 
                 function drawPereDelmareSpeechDistributionChart() {
-                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'])"/>
-],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Charles_Delmare'])"/>
-],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'])"/>
+                    var data = google.visualization.arrayToDataTable([[ 'Task', "Répartition des mentions des personnages dans l'intégralité des dialogues du père Delmare, lui y compris"],[ 'Geneviève',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Geneviève'] | //said[@who = '#père_Delmare']//persName[@ref = '#Geneviève'])"/>
+],[ 'Charles Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#Charles_Delmare'] | //said[@who = '#père_Delmare']//persName[@ref = '#Charles_Delmare'])"/>
+],[ 'Le père Delmare',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#père_Delmare'] | //said[@who = '#père_Delmare']//persName[@ref = '#père_Delmare'])"/>
+],[ 'La famille Dumirail',<xsl:value-of select="count(//said[@who = '#père_Delmare']//rs[@ref = '#famille_Dumirail'] | //said[@who = '#père_Delmare']//persName[@ref = '#famille_Dumirail'])"/>
 ]]);
                     
                     var options = {
@@ -432,7 +433,12 @@
                     
                     var chart = new google.visualization.PieChart(document.getElementById('PereDelmareSpeechDistributionChart'));
                     chart.draw(data, options);
-                }// Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne// parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une// seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script>
+                }
+                
+                // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne
+                // parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une
+                // seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui
+                // s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script>
             </html>
         </xsl:result-document>
 
@@ -477,7 +483,7 @@
                                             <!-- Si <relation> ne possède pas d'attribut @active, alors c'est qu'il y a probablement un attribut @mutual, que l'on va traiter ici. -->
                                             <xsl:otherwise>
                                                 <!-- On utilise la fonction XPath translate() pour remplacer le # et le _ par un espace -->
-                                                <!-- On ne transforme pas les pointeurs par commodité, la chaîne de caractère comprenant en effet deux pointeurs, difficile à traiter et à séparer en deux entités séparées qu'on pourrait exploiter plus tard. On se contente donc du pointeur pour afficher le nom des personnages. Cette solution est applicable à @active et @passive également, l'output étant finalement le même. Cette technique a l'avantage de ne pas nécessiter la création de variable. -->
+                                                <!-- On ne transforme pas les pointeurs par commodité, la chaîne de caractère comprenant en effet deux pointeurs, difficile à traiter et à séparer en deux entités distincts qu'on pourrait exploiter plus tard. On se contente donc du pointeur pour afficher le nom des personnages. Cette solution est applicable à @active et @passive également, l'output étant finalement le même. Cette technique a l'avantage de ne pas nécessiter la création de variable. -->
                                                 <dd>
                                                   <xsl:value-of
                                                   select="./translate(@mutual, '#_', '  ')"/>
@@ -498,6 +504,7 @@
             </html>
         </xsl:result-document>
 
+        <!-- On crée la sortie HTML pour la page à propos -->
         <xsl:result-document href="{$path_about}" method="html" indent="yes">
             <html>
                 <xsl:copy-of select="$head"/>
@@ -576,36 +583,51 @@
     <!-- Template d'affichage de l'index des personnages -->
     <xsl:template name="pers_index" match="//listPerson">
         <!-- On écrit une boucle for-each pour pouvoir trier par ordre alphabétique les personnages avec xsl:sort -->
+        <!-- La boucle nous permettra également d'afficher les occurences des personnages dans le roman -->
         <xsl:for-each select="//person">
             <xsl:sort select="persName" order="ascending"/>
             <li>
+                <!-- On affiche le nom du personnage et la note lui correspondant -->
                 <xsl:value-of select="concat(persName, ' : ', note)"/>
                 <ul>
+                    <!-- On crée une variable qui permet de stocker l'@xml:id du personnage -->
                     <xsl:variable name="person_xml_id">
                         <xsl:value-of select="./@xml:id"/>
                     </xsl:variable>
-                    <xsl:for-each-group
-                        select="ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)]"
-                        group-by="ancestor::div[1]">
-                        <li>
-                            <xsl:value-of
-                                select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
-                            />
-                        </li>
-                    </xsl:for-each-group>
-                    <xsl:if
-                        test="not(ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)])">
-                        <xsl:for-each-group
-                            select="ancestor::TEI//body/div//said[@who = concat('#', $person_xml_id)]"
-                            group-by="ancestor::div[1]">
-                            <xsl:value-of
-                                select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
-                            />
-                        </xsl:for-each-group>
-                    </xsl:if>
+                    <xsl:choose>
+                        <!-- On essaye de récupérer les informations sur l'occurence des personnages avec les <persName> -->
+                        <xsl:when
+                            test="ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)]">
+                            <!-- On utilise xsl:for-each-group pour itérer sur les persName, et on les groupe selon les <div> de premier niveau -->
+                            <xsl:for-each-group
+                                select="ancestor::TEI//body/div//persName[@ref = concat('#', $person_xml_id)]"
+                                group-by="ancestor::div[1]">
+                                <li>
+                                    <!-- On récupère les informations des attributs @type et @n des <div> au niveau des parties, et des chapitres -->
+                                    <xsl:value-of
+                                        select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
+                                    />
+                                </li>
+                            </xsl:for-each-group>
+                        </xsl:when>
+
+                        <!-- Il est possible qu'un personnage ne soit pas mentionné directement dans le texte avec un <persName>, mais qu'il prenne la parole, signalé par un <said>.-->
+                        <xsl:otherwise>
+                            <xsl:for-each-group
+                                select="ancestor::TEI//body/div//said[@who = concat('#', $person_xml_id)]"
+                                group-by="ancestor::div[1]">
+                                <li>
+                                    <xsl:value-of
+                                        select="concat(ancestor::body/div/div/@type, ' ', ancestor::body/div/div/@n, ', ', ancestor::div[1]/@type, ' ', ancestor::div[1]/@n)"
+                                    />
+                                </li>
+                            </xsl:for-each-group>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </ul>
             </li>
         </xsl:for-each>
+        <!-- On réalise la même opération pour les personnages signalés dans l'encodage en tant que groupe avec <personGrp> -->
         <xsl:for-each select="//personGrp">
             <xsl:sort select="persName" order="ascending"/>
             <li>
@@ -660,6 +682,7 @@
     </xsl:template>
 
     <!-- Règles pour afficher la transcription -->
+    
     <!-- Afin d'afficher une transcription avec seulement le texte, on utilise le mode #all -->
     <!-- On traite les <head> des <div> de premier niveau -->
     <xsl:template match="//body/div/head" mode="#all">
@@ -707,7 +730,7 @@
         </xsl:element>
     </xsl:template>
 
-    <!-- Afin de proposer une transcription enrichie, on crée le mode enrichi, qui permettra d'entourer tous les persName et les placeName avec une balise <a> renvoyant à l'index des noms de lieux, ou l'index des noms de personnage. -->
+    <!-- Afin de proposer une transcription enrichie, on crée le mode enrichi, qui permettra d'entourer tous les <persName> et les <placeName> avec une balise <a> renvoyant à l'index des noms de lieux, ou à l'index des noms de personnage. -->
     <xsl:template match="placeName" mode="enrichi">
         <!-- On doit recréer les variables des chemins de fichier car celles créées initialement sont dans le scope de la première template, et ne sont donc pas disponibles en dehors. -->
         <xsl:variable name="witfile">
