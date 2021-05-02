@@ -67,14 +67,16 @@
                         ['Famille Dumirail', 0]
 ]);
                     
-                    // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un count(). Cependant, dans le cas où il y
-                    // aurait un nombre important de personnages, on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
+                    // Les valeurs récupérées grâce à ces boucle auraient pu être récupérées grâce à un simple count().
+                    // Cependant, dans le cas où il y aurait un nombre important de personnages,
+                    // on peut imaginer qu'il serait chronophage de les lister un par un. Ces boucles
                     // s'en occupent donc, mais ont pour ici valeur de démonstration.
-                    // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage. Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
+                    // La première boucle récupère les personnages uniques. La deuxième boucle récupère les groupes de personnage.
+                    // Dans notre cas, la valeur pour le seul personGrp sera de 0, la famille Dumirail n'ayant aucun dialogue dans l'extrait encodé.
                     // Avec xsl:text on s'assure qu'on construit un array JavaScript valide.
                     // On utilise un xsl:if pour construire un array JavaScript valide, au cas où les groupes de personnages seraient plus de 1.
                     // On n'applique pas ce xsl:if sur la boucle des personnages uniques car l'encodage XML comporte un groupe de personnages.
-                    // Des utilisations de count() sont effectuées plus bas.
+                    // Des utilisations de count() sans boucle sont effectuées plus bas.
                     
                     var options = {
                         'title': "Distribution de l'espace de parole", 'width': 550, 'height': 400
@@ -142,4 +144,5 @@
                 
                 // Etant donné que dans l'extrait encodé les trois personnages n'interagissent pas tous et toutes entre eux (Charles Delmare ne
                 // parle qu'à Geneviève, le père Delmare ne parle qu'à Geneviève, Geneviève adresse la parole, indirectement, au père Delmare qu'une
-                // seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui// s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script></html>
+                // seule fois), il n'est pas pertinent à ce stade de faire des diagrammes de répartition des mentions dans les dialogues selon à qui
+                // s'adresse le personnage. On préfère se contenter des diagrammes indiquant les mentions dans l'intégralité des dialogues.</script></html>
